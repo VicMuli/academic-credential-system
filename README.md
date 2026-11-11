@@ -1,75 +1,49 @@
-# Academic Credential Verification MVP
+# Smart contract workspace (Jose)
 
-A beginner-friendly group project that demonstrates how an academic credential can be signed, stored off-chain, registered by hash on Polygon Amoy, revoked, and checked by an employer.
+`CredentialRegistry` stores only hashes and status on Polygon Amoy. No names, grades or documents go on-chain.
 
-**Deadline:** 15 November 2026  
-**Team:** Victor Nzioki (coordinator and integration), Jose (Solidity), Serah (Next.js), Fatuma (Node.js, testing and documentation).
+## Interface (matches docs/api-contract.md and docs/integration-contract.md)
 
-## What the MVP does
+| Function | Who | Does |
+|---|---|---|
+| `registerCredential(bytes32 credentialIdHash, bytes32 contentHash)` | Issuer wallet (backend) | Registers the record. Caller becomes the issuer. Reverts on duplicates or zero hashes. |
+| `revokeCredential(bytes32 credentialIdHash)` | Registering issuer only | Marks the record revoked. |
+| `getCredential(bytes32 credentialIdHash)` | Anyone (read) | Returns `(bool exists, bytes32 contentHash, address issuer, uint64 issuedAt, bool revoked)`. |
 
-1. A university demo user submits a credential in the agreed JSON shape.
-2. The Node.js API signs a W3C-style credential using a private key kept on the server and stores the signed JSON document off-chain.
-3. The backend calculates a deterministic hash of the credential and registers the credential ID and hash in a Solidity contract on Polygon Amoy.
-4. An employer enters a credential ID. The app checks the stored document's signature, recalculates its hash, compares it with the on-chain hash, and checks revocation status.
-5. The university demo user can revoke a credential; later checks report it as revoked.
+Events: `CredentialRegistered(credentialIdHash, contentHash, issuer, issuedAt)` and `CredentialRevoked(credentialIdHash, issuer, revokedAt)`.
 
-This is a classroom MVP, not production SSI or a standards-certified W3C VC implementation. Use synthetic student data only. Never put names, grades, documents, private keys, recovery phrases, RPC secrets, or other personal data on-chain or in Git.
+Custom errors: `AlreadyRegistered`, `NotRegistered`, `NotIssuer`, `AlreadyRevoked`, `EmptyHash`.
 
-## Beginner setup
+Hash rules (from the integration contract): `credentialIdHash = keccak256(utf8(id))`, `contentHash = sha256(JCS(unsigned credential))`, both passed as 0x + 64 hex characters.
 
-Prerequisites: Git, Node.js LTS, npm, and a browser wallet such as MetaMask for testnet deployment. Do not fund a wallet with real money for this assignment.
+Status mapping for the backend: `exists == false` -> `not_found`; `revoked == true` -> `revoked`.
 
-1. Clone the repository and create a branch for your assigned task.
-2. Copy the root `.env.example` to `.env` and fill local test values only. The populated `.env` file is ignored by Git.
-3. Install each app's dependencies using the instructions in its folder.
-4. Start the backend and frontend in separate terminals.
-5. Follow the demo flow in `docs/testing-and-demo.md`.
+## Setup
 
-## Project structure
-
-```text
-academic-credential-mvp/
-├── README.md
-├── .gitignore
-├── .env.example                 # Setting names only; no secrets
-├── scripts/
-│   └── check-amoy-config.mjs    # Static Polygon Amoy settings check
-├── docs/
-│   ├── architecture.md
-│   ├── integration-contract.md
-│   ├── api-contract.md
-│   ├── team-workflow.md
-│   ├── codex-prompts.md
-│   ├── testing-and-demo.md
-│   └── presentation-outline.md
-├── contracts/                   # Jose: Solidity contract and contract tests
-│   ├── contracts/
-│   ├── test/
-│   └── README.md
-├── backend/                     # Fatuma: Node.js API, signing and verification
-│   ├── src/
-│   ├── test/
-│   └── README.md
-└── frontend/                    # Serah: Next.js user interface
-    ├── app/
-    ├── components/
-    └── README.md
+```bash
+cd contracts
+npm install
+npm test
 ```
 
-Keep the API contract in `docs/api-contract.md` stable. Each folder owner may add the usual package files, tests, and setup instructions inside their folder. Agree on credential fields, endpoint behavior, contract method names, and error shapes before parallel implementation.
+## Deploy
 
-## MVP boundaries
+1. In the root `.env`, set `POLYGON_AMOY_RPC_URL` and `ISSUER_PRIVATE_KEY` (a throwaway testnet key with test POL only).
+2. Deploy:
+   - Local rehearsal: `npm run node` in one terminal, then `npm run deploy:local` in another.
+   - Amoy: `npm run deploy:amoy`
+3. Copy the printed address into `CONTRACT_ADDRESS` in `.env`, and record it below.
+4. The ABI is written to `contracts/abi/CredentialRegistry.abi.json` for the backend.
 
-- Use a signed JSON credential with a small, documented W3C-style shape; do not claim full JSON-LD proof-suite or Polygon ID compliance.
-- Store credential documents off-chain in a simple local JSON store for the demo. Make clear that this is not encrypted production storage.
-- Store only a bytes32 credential ID hash, credential content hash, issuer address, issue time, and revoked flag on-chain.
-- Use Polygon Amoy testnet. No mainnet deployment, NFTs, real student records, decentralized identity wallet, or production authentication in this deadline.
-- Verify signature, document hash, on-chain hash, and revoked status. Clearly distinguish `valid`, `revoked`, `not found`, and `tampered`.
+## Deployment notes (fill in after deploying)
 
-## Scripts and run instructions
+- Network: Polygon Amoy, chain ID 80002
+- Contract address:
+- Deployment transaction link:
+- Deployed by (public address only):
 
-Copy `.env.example` to `.env`, then run `node --env-file=.env scripts/check-amoy-config.mjs` to check the Amoy settings. After deployment, add `--require-contract`; add `--require-issuer` when checking issue/revoke configuration. This is a format check only: it does not contact the RPC or confirm that a contract is deployed. Use Node.js 20.6 or newer for `--env-file`. Keep the populated `.env` local and never paste it into Codex or screenshots.
+## Limitations (for the demo)
 
-## How to contribute
-
-Read `docs/team-workflow.md` and `docs/api-contract.md` before coding. Use one feature branch per task, open a pull request into `main`, and request Victor's review. Do not commit directly to `main`. See `docs/codex-prompts.md` for individual prompts.
+- Any wallet can register a record and becomes its issuer; the backend must check that `issuer` equals its own wallet address when verifying.
+- One central demo issuer, so there is no multi-issuer governance.
+- Testnet only; Amoy data is public.
