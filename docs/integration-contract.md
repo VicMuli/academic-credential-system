@@ -1,6 +1,6 @@
 # Integration Contract for the Amoy MVP
 
-This document is Victor's integration proposal for the shared boundary between the contract, backend, frontend, and demo. It keeps each member's implementation independent while defining the values and results that must match. Jose should confirm the contract ABI, and Sunflower should confirm the canonicalization and signature library before those components are merged.
+This document is Victor's integration proposal for the shared boundary between the contract, backend, frontend, and demo. It keeps each member's implementation independent while defining the values and results that must match. Jose should confirm the contract ABI, and Fatuma should confirm the canonicalization and signature library before those components are merged.
 
 ## Agreed system boundary
 
@@ -17,7 +17,7 @@ The API contract's sample credential is the unsigned credential payload. It incl
 1. Canonicalize the unsigned credential using RFC 8785 JSON Canonicalization Scheme (JCS). Do not rely on object insertion order or ordinary `JSON.stringify` output for the shared hash.
 2. Set `contentHash` to SHA-256 of the UTF-8 bytes of that canonical JSON. It is exactly 32 bytes and can be passed to Solidity as `bytes32`.
 3. Set `credentialIdHash` to Keccak-256 of the UTF-8 bytes of the credential's `id`. Represent both bytes32 values as 0x-prefixed, 64-hex-character strings at the API/ethers boundary.
-4. The backend signs the same canonical unsigned payload with the demo issuer key and stores the signature in the signed document's `proof`. Sunflower records the selected signature algorithm and key format in the backend README. This project uses a W3C-style shape but does not claim standards-certified W3C proof-suite compliance.
+4. The backend signs the same canonical unsigned payload with the demo issuer key and stores the signature in the signed document's `proof`. Fatuma records the selected signature algorithm and key format in the backend README. This project uses a W3C-style shape but does not claim standards-certified W3C proof-suite compliance.
 5. Use the same canonicalization and hashing routine in issue and verify paths. A one-character change to an unsigned credential field must produce a verification failure.
 
 The RFC defines JCS as a deterministic JSON representation suitable for repeatable hashing and signatures. The Amoy chain ID is 80002. References are listed at the end.
@@ -70,7 +70,7 @@ The private key should be a disposable testnet issuer key with no real funds. Do
 ## Integration order and acceptance checks
 
 1. Jose confirms the ABI and demonstrates contract tests for register, lookup, duplicate rejection, authorized revocation, and unauthorized revocation.
-2. Sunflower confirms the JCS library, signature algorithm/key format, and backend route/response shapes. Unit tests cover stable hash output and modified-document rejection.
+2. Fatuma confirms the JCS library, signature algorithm/key format, and backend route/response shapes. Unit tests cover stable hash output and modified-document rejection.
 3. Serah uses the response shape above and renders the four statuses without re-verifying in browser code.
 4. Victor connects the backend to the Amoy contract and checks chain ID/address before any write.
 5. The team rehearses issue → valid verification → tamper check → revoke → revoked verification with synthetic data. A mock is labeled as a mock; a testnet transaction is not represented as successful until its receipt is confirmed.
