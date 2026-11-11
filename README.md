@@ -68,7 +68,7 @@ Keep the API contract in `docs/api-contract.md` stable. Each folder owner may ad
 
 ## Scripts and run instructions
 
-Copy `.env.example` to `.env`, then run `node --env-file=.env scripts/check-amoy-config.mjs` to check the Amoy settings. After deployment, add `--require-contract`; add `--require-issuer` when checking issue/revoke configuration. This is a format check only: it does not contact the RPC or confirm that a contract is deployed. Use Node.js 20.6 or newer for `--env-file`. Keep the populated `.env` local and never paste it into Codex or screenshots.
+Copy `.env.example` to `.env`, then run `node --env-file=.env scripts/check-amoy-config.mjs` for an offline format check. Add `--check-rpc` to send a read-only `eth_chainId` request and confirm the endpoint reports Amoy (80002); it does not sign or send a transaction. After deployment, add `--require-contract`; add `--require-issuer` when checking issue/revoke configuration. These checks do not confirm that a contract is deployed. Use Node.js 20.6 or newer for `--env-file`. Keep the populated `.env` local and never paste it into Codex or screenshots.
 
 ## How to contribute
 
