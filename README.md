@@ -34,6 +34,7 @@ academic-credential-mvp/
 ├── .env.example                 # Names of settings only; no secrets
 ├── docs/
 │   ├── architecture.md
+│   ├── integration-contract.md
 │   ├── api-contract.md
 │   ├── team-workflow.md
 │   ├── codex-prompts.md
