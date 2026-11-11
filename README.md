@@ -3,7 +3,7 @@
 A beginner-friendly group project that demonstrates how an academic credential can be signed, stored off-chain, registered by hash on Polygon Amoy, revoked, and checked by an employer.
 
 **Deadline:** 15 November 2026  
-**Team:** Victor Nzioki (coordinator and integration), Jose (Solidity), Serah (Next.js), Sunflower (Node.js, testing and documentation).
+**Team:** Victor Nzioki (coordinator and integration), Jose (Solidity), Serah (Next.js), Fatuma (Node.js, testing and documentation).
 
 ## What the MVP does
 
@@ -20,10 +20,10 @@ This is a classroom MVP, not production SSI or a standards-certified W3C VC impl
 Prerequisites: Git, Node.js LTS, npm, and a browser wallet such as MetaMask for testnet deployment. Do not fund a wallet with real money for this assignment.
 
 1. Clone the repository and create a branch for your assigned task.
-2. Copy each app's `.env.example` to `.env` and fill only local test values. `.env` files are ignored by Git.
+2. Copy the root `.env.example` to `.env` and fill local test values only. The populated `.env` file is ignored by Git.
 3. Install each app's dependencies using the instructions in its folder.
 4. Start the backend and frontend in separate terminals.
-5. Follow the demo flow in `docs/demo-checklist.md`.
+5. Follow the demo flow in `docs/testing-and-demo.md`.
 
 ## Project structure
 
@@ -31,7 +31,9 @@ Prerequisites: Git, Node.js LTS, npm, and a browser wallet such as MetaMask for 
 academic-credential-mvp/
 ├── README.md
 ├── .gitignore
-├── .env.example                 # Names of settings only; no secrets
+├── .env.example                 # Setting names only; no secrets
+├── scripts/
+│   └── check-amoy-config.mjs    # Static Polygon Amoy settings check
 ├── docs/
 │   ├── architecture.md
 │   ├── integration-contract.md
@@ -44,7 +46,7 @@ academic-credential-mvp/
 │   ├── contracts/
 │   ├── test/
 │   └── README.md
-├── backend/                     # Sunflower: Node.js API, signing and verification
+├── backend/                     # Fatuma: Node.js API, signing and verification
 │   ├── src/
 │   ├── test/
 │   └── README.md
@@ -66,7 +68,7 @@ Keep the API contract in `docs/api-contract.md` stable. Each folder owner may ad
 
 ## Scripts and run instructions
 
-The contract, backend, and frontend READMEs will document exact commands once implementation choices are agreed. Keep scripts simple and add one command at a time. Never copy a real `.env` file into documentation or screenshots.
+Copy `.env.example` to `.env`, then run `node --env-file=.env scripts/check-amoy-config.mjs` to check the Amoy settings. After deployment, add `--require-contract`; add `--require-issuer` when checking issue/revoke configuration. This is a format check only: it does not contact the RPC or confirm that a contract is deployed. Use Node.js 20.6 or newer for `--env-file`. Keep the populated `.env` local and never paste it into Codex or screenshots.
 
 ## How to contribute
 
