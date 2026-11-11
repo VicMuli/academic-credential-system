@@ -20,7 +20,7 @@ Credential sample fields (synthetic data only):
 }
 ```
 
-For the MVP, add a clearly explained server-side signature envelope (algorithm and signature) or a W3C-style `proof` object. Use `docs/integration-contract.md` for Victor's proposed integration rules: canonicalize the unsigned credential with RFC 8785 JCS, SHA-256 hash the canonical payload, and agree the signature algorithm with Sunflower before merging. Keep signing private key server-side. This demo is not a complete W3C JSON-LD Data Integrity proof implementation.
+For the MVP, add a clearly explained server-side signature envelope (algorithm and signature) or a W3C-style `proof` object. Use `docs/integration-contract.md` for Victor's proposed integration rules: canonicalize the unsigned credential with RFC 8785 JCS, SHA-256 hash the canonical payload, and agree the signature algorithm with Fatuma before merging. Keep signing private key server-side. This demo is not a complete W3C JSON-LD Data Integrity proof implementation.
 
 ## Endpoints
 
