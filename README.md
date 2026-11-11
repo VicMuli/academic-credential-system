@@ -3,7 +3,7 @@
 A beginner-friendly group project that demonstrates how an academic credential can be signed, stored off-chain, registered by hash on Polygon Amoy, revoked, and checked by an employer.
 
 **Deadline:** 15 November 2026  
-**Team:** Victor Nzioki (coordinator and integration), Jose (Solidity), Serah (Next.js), Sunflower (Node.js, testing and documentation).
+**Team:** Victor Nzioki (coordinator and integration), Jose (Solidity), Serah (Next.js), Fatuma (Node.js, testing and documentation).
 
 ## What the MVP does
 
@@ -44,7 +44,7 @@ academic-credential-mvp/
 │   ├── contracts/
 │   ├── test/
 │   └── README.md
-├── backend/                     # Sunflower: Node.js API, signing and verification
+├── backend/                     # Fatuma: Node.js API, signing and verification
 │   ├── src/
 │   ├── test/
 │   └── README.md
