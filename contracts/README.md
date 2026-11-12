@@ -62,9 +62,9 @@ Victor coordinates the Amoy deployment and backend connection. Do not deploy fro
 ## Deployment record
 
 - Network: Polygon Amoy, chain ID 80002
-- Contract address: not deployed yet
-- Deployment transaction: not deployed yet
-- Deployer address: record the public address after deployment
+- Contract address: `0x1dC2404b371BAfbf4ed3f641596dA2FE40267063`
+- Deployment transaction: [0x71ab820b176e082f22618ea78aa428ba708323bf2c47f6ae71f440cd6ca79b47](https://amoy.polygonscan.com/tx/0x71ab820b176e082f22618ea78aa428ba708323bf2c47f6ae71f440cd6ca79b47)
+- Deployer address: `0xF492b459573120d45937537E50877abEf07e58D7`
 
 ## MVP limitation
 
