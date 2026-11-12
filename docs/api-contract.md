@@ -24,10 +24,10 @@ For the MVP, add a clearly explained server-side signature envelope (algorithm a
 
 ## Endpoints
 
-- `POST /credentials`: validate demo input, create ID if needed, sign it, persist signed document off-chain, hash the agreed canonical payload, register ID/hash on-chain. Return `{ id, status, transactionHash }`. Do not return secrets.
-- `GET /credentials/:id`: return the off-chain signed credential for the issuer/student demo view only. Keep employer verification response minimal.
-- `GET /verify/:id`: retrieve document and on-chain record, check signature, recomputed hash, registered hash, and revocation. Return `{ id, status, checks }`, where status is `valid`, `revoked`, `tampered`, or `not_found`; checks contains booleans `signatureValid`, `hashMatches`, `registeredOnChain`, `notRevoked`.
-- `POST /credentials/:id/revoke`: revoke on-chain (authorized issuer in demo configuration) and return `{ id, status: "revoked", transactionHash }`.
+- `POST /credentials`: issuer-authorized route. Validate demo input, create ID if needed, sign it, persist signed document off-chain, hash the agreed canonical payload, register ID/hash on-chain. Return `{ id, status, transactionHash }`. Require `Authorization: Bearer <ISSUER_API_TOKEN>`; do not return secrets.
+- `GET /credentials/:id`: issuer-authorized route returning the off-chain signed credential for the issuer/student demo view only. Require the same bearer token and keep employer verification responses minimal.
+- `GET /verify/:id`: public route. Retrieve the document and on-chain record, check signature, recomputed hash, registered hash, expected issuer, and revocation. Return `{ id, status, checks }`, where status is `valid`, `revoked`, `tampered`, or `not_found`; checks contains booleans `signatureValid`, `hashMatches`, `issuerMatches`, `registeredOnChain`, `notRevoked`.
+- `POST /credentials/:id/revoke`: issuer-authorized route. Revoke on-chain and return `{ id, status: "revoked", transactionHash }`. Require `Authorization: Bearer <ISSUER_API_TOKEN>`.
 
 Use consistent JSON errors: `{ "error": { "code": "NOT_FOUND", "message": "Credential was not found." } }`. Do not expose stack traces or private student details in verify responses.
 
