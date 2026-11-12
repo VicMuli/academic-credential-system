@@ -1,27 +1,31 @@
-# Backend workspace
+# Fatuma's backend workspace
 
-# Academic Credential Verification System
+This Express API issues, stores, verifies, and revokes fictional academic credentials. Full signed credentials stay in the local JSON store; Polygon Amoy receives only the credential ID hash and content hash.
 
-## Project Overview
-The Academic Credential Verification System is designed to make it easier for employers and other authorised parties to verify academic credentials.
+## Setup
 
-## Backend Development
-The backend is being developed using Node.js and Express.js.
+Use Node.js LTS, then from this folder run:
 
-## Main Backend Responsibilities
-- Issuing academic credentials.
-- Generating digital signatures.
-- Generating SHA-256 hashes.
-- Storing credential information off-chain.
-- Verifying credential authenticity.
-- Supporting credential revocation.
-- Integrating with the Polygon Amoy test network.
+```bash
+npm install
+npm test
+```
 
-## Planned API Endpoints
-- `POST /credentials/issue` – Issues a new credential.
-- `GET /credentials/:id` – Retrieves a credential.
-- `POST /credentials/verify` – Verifies a credential.
-- `POST /credentials/:id/revoke` – Revokes a credential.
+Copy the root `.env.example` to `.env` and set the Amoy RPC URL, deployed contract address, a disposable testnet issuer private key, and `POLYGON_AMOY_CHAIN_ID=80002`. Keep `.env` out of Git. The contract ABI in `src/registry.js` matches `CredentialRegistry.sol`. The backend checks the chain ID and waits for successful transaction receipts before reporting issue or revocation as complete.
 
-## Project Status
-Backend development and integration are in progress.
+Generate an Ed25519 signing key pair once and keep its keys stable for the life of the demo store. Save the private key as base64 PKCS#8 DER in `CREDENTIAL_SIGNING_PRIVATE_KEY`, and the public key as base64 SPKI DER in `CREDENTIAL_SIGNING_PUBLIC_KEY`. For example, Node's `generateKeyPairSync('ed25519')` can export with `{format:'der',type:'pkcs8'}` and `{format:'der',type:'spki'}`. These keys are separate from the EVM issuer wallet key. Never commit or share either private key. Set `CREDENTIAL_STORE_PATH` to an ignored local path such as `./data/credentials.json`.
+
+Start the API with `npm start`. It listens on port 4000 by default, with base URL `http://localhost:4000/api`.
+
+## API
+
+- `POST /credentials` accepts `{ "credentialSubject": { ...fictional claims... } }`; returns `{ id, status, transactionHash }`.
+- `GET /credentials/:id` returns the signed off-chain credential for the issuer demo view.
+- `GET /verify/:id` returns `{ id, status, checks }` with `valid`, `revoked`, `tampered`, or `not_found`. The response excludes credential claims.
+- `POST /credentials/:id/revoke` revokes the on-chain record and returns `{ id, status, transactionHash }`.
+
+Errors use `{ "error": { "code", "message" } }`. Do not put real student records, names, grades, secrets, or private keys in code, requests, screenshots, or chain transactions. This local JSON store and testnet issuer are classroom demo components, not production identity infrastructure.
+
+## Hash and signature rules
+
+The API canonicalizes the credential without its `proof` using RFC 8785 JCS. `contentHash` is SHA-256 of that UTF-8 canonical JSON; `credentialIdHash` is Keccak-256 of the UTF-8 credential ID. Ed25519 signs the same canonical payload. The proof uses a W3C-style `Ed25519Signature2020` shape and carries the demo public key; it is an integrity demonstration, not a standards-certified W3C proof suite. Before merging, Fatuma and Victor should confirm this algorithm and key format with the team.
