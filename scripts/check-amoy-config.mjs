@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-// Static Amoy configuration check. This script does not connect to the RPC
-// endpoint and never prints the endpoint or issuer key.
+// Amoy configuration check. --check-rpc makes a read-only eth_chainId request.
+// The script never prints the endpoint or issuer key.
 
 const args = new Set(process.argv.slice(2));
-const knownArgs = new Set(["--require-contract", "--require-issuer"]);
+const knownArgs = new Set(["--require-contract", "--require-issuer", "--check-rpc"]);
 const errors = [];
 const warnings = [];
 
@@ -61,5 +61,30 @@ if (errors.length) {
   process.exitCode = 1;
 } else {
   console.log("Amoy configuration values passed the format check.");
-  console.log("No RPC request was made; this does not confirm deployment or network connectivity.");
+  if (args.has("--check-rpc")) {
+    try {
+      const response = await fetch(rpcUrl, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", method: "eth_chainId", params: [], id: 1 }),
+        signal: AbortSignal.timeout(15000),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (result.error) throw new Error(result.error.message || "RPC returned an error");
+      if (typeof result.result !== "string" || !/^0x[0-9a-f]+$/i.test(result.result)) {
+        throw new Error("RPC response did not contain a valid chain ID");
+      }
+      const actualChainId = Number.parseInt(result.result, 16);
+      if (actualChainId !== 80002) {
+        throw new Error(`Endpoint returned chain ID ${actualChainId}; expected 80002 (Polygon Amoy)`);
+      }
+      console.log("RPC connection passed: endpoint reports Polygon Amoy (chain ID 80002).");
+    } catch (error) {
+      console.error("RPC check failed: " + error.message);
+      process.exitCode = 1;
+    }
+  } else {
+    console.log("No RPC request was made. Add --check-rpc to verify Polygon Amoy connectivity.");
+  }
 }
