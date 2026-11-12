@@ -38,12 +38,12 @@ Base URL for local development: `http://localhost:4000/api`.
 
 | Action | Request | Expected result |
 |---|---|---|
-| Issue | `POST /credentials` with the agreed credential input | `{ id, status, transactionHash }` after storage and successful registration |
-| Fetch for issuer/demo | `GET /credentials/:id` | Signed off-chain document; never expose private keys |
+| Issue | `POST /credentials` with the agreed credential input and issuer bearer token | `{ id, status, transactionHash }` after storage and successful registration |
+| Fetch for issuer/demo | `GET /credentials/:id` with the issuer bearer token | Signed off-chain document; never expose private keys |
 | Verify for employer | `GET /verify/:id` | `{ id, status, checks }`; statuses are `valid`, `revoked`, `tampered`, or `not_found` |
-| Revoke | `POST /credentials/:id/revoke` | `{ id, status: "revoked", transactionHash }` after the contract accepts the issuer's request |
+| Revoke | `POST /credentials/:id/revoke` with the issuer bearer token | `{ id, status: "revoked", transactionHash }` after the contract accepts the issuer's request |
 
-Verification checks are `signatureValid`, `hashMatches`, `registeredOnChain`, and `notRevoked`. The employer view shows the credential ID and status/checks only; it should not display the graduate's claims. The backend remains authoritative for verification.
+Issuer-only routes require `Authorization: Bearer <ISSUER_API_TOKEN>`. Keep the token server-side; for the local classroom UI, the issuer enters it for the session. Verification checks are `signatureValid`, `hashMatches`, `issuerMatches`, `registeredOnChain`, and `notRevoked`. The employer view shows the credential ID and status/checks only; it should not display the graduate's claims. The backend remains authoritative for verification.
 
 Suggested status rules:
 
@@ -62,6 +62,9 @@ Use `.env.example` for variable names and descriptions only. Each developer crea
 | `POLYGON_AMOY_CHAIN_ID` | Backend/deployment | Must be `80002` for Amoy |
 | `CONTRACT_ADDRESS` | Backend | Set after Jose/Victor deploy the contract |
 | `ISSUER_PRIVATE_KEY` | Backend only | Local test key only; never commit or paste into Codex |
+| `CREDENTIAL_SIGNING_PRIVATE_KEY` | Backend only | Base64 PKCS#8 Ed25519 key; keep local and secret |
+| `CREDENTIAL_SIGNING_PUBLIC_KEY` | Backend | Base64 SPKI Ed25519 key matching the signing key |
+| `ISSUER_API_TOKEN` | Issuer routes only | Random local bearer token; never place in `NEXT_PUBLIC_*` values |
 | `CREDENTIAL_STORE_PATH` | Backend | Local off-chain demo JSON store |
 | `NEXT_PUBLIC_API_BASE_URL` | Frontend | Public API URL only; no private configuration |
 
