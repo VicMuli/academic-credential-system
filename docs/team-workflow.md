@@ -41,6 +41,6 @@ Victor coordinates integration; Jose remains the owner of the Solidity implement
 
 - A sample signed credential can be issued and kept off-chain.
 - Its deterministic content hash is registered on Amoy.
-- Employer verification reports valid only if signature, content hash, on-chain hash, and revocation status all pass.
+- Employer verification reports valid only if signature, content hash against the on-chain hash, on-chain issuer, and revocation status all pass.
 - Altered, unknown, and revoked credentials produce distinct understandable outcomes.
 - Demo works from written instructions; no secrets or real personal records appear in Git or the presentation.
