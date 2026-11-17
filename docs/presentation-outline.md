@@ -10,4 +10,4 @@
    - Issuer actions need a bearer token; employers get a status and checks, never the claims.
    - Private keys and the token stay on the server or in page memory, never in Git or frontend settings.
 5. Limits and next steps: testnet, demo issuer key, one shared issuer token instead of accounts, local unencrypted JSON storage, W3C-style shape rather than complete standards compliance; production needs institutional identity, secure storage, access controls, key rotation, privacy review, and standards-compliant proof tooling.
-6. Each member explains their component and one challenge learned: Jose (contract), Fatuma (API, signing, tests), Serah (frontend), Victor (integration and Amoy deployment).
+6. Each member explains their component and one challenge learned: Jose (contract), Fatuma (API, signing, backend tests), Serah (frontend), Victor (integration and Amoy deployment), and Peterson (end-to-end smoke testing and demo evidence).

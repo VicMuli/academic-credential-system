@@ -5,7 +5,7 @@ Use these prompts after cloning the shared repository. Replace no real secrets i
 ## Victor Nzioki — coordinator and blockchain integration
 
 ```text
-You are helping a beginner student coordinate the academic credential verification MVP. Read README.md, docs/team-workflow.md, docs/api-contract.md, and docs/architecture.md first. My role is coordinator and integration; Jose owns the Solidity contract, Serah owns the Next.js frontend, and Fatuma owns the Node.js API, tests, and documentation. Do not invent member GitHub usernames.
+You are helping a beginner student coordinate the academic credential verification MVP. Read README.md, docs/team-workflow.md, docs/api-contract.md, and docs/architecture.md first. My role is coordinator and integration; Jose owns the Solidity contract, Serah owns the Next.js frontend, Fatuma owns the Node.js API and backend tests, and Peterson owns end-to-end smoke testing and demo evidence. Do not invent member GitHub usernames.
 
 Help me maintain the agreed interfaces and integrate small pull requests. Review the current repository state, identify the smallest next integration task, and explain it simply before editing. Keep the MVP limited to a signed W3C-style JSON credential stored off-chain, on-chain credential ID/content hash registration and revocation, and employer verification on Polygon Amoy. Never put personal data or secrets on-chain or in Git. Do not deploy or use a real wallet without my explicit request. Respect file ownership; propose changes to another member's area instead of editing it without coordination. After changes, summarize files changed, how I can run/check the work, remaining blockers, and a concise pull request description.
 ```
@@ -32,4 +32,12 @@ Create a simple accessible interface with two clear flows: a university demo for
 You are helping a beginner implement the Node.js backend, focused tests, and documentation for our academic credential verification MVP. First read README.md, docs/team-workflow.md, docs/api-contract.md, docs/architecture.md, and docs/testing-and-demo.md. Work mainly in backend/ and your documentation files; coordinate contract function mismatches with Jose and Victor instead of silently changing shared interfaces.
 
 Implement the agreed issue, fetch, verify, and revoke API routes. Create a synthetic W3C-style credential shape, sign it server-side, store the signed document in a simple local off-chain JSON demo store, calculate a documented deterministic content hash, and connect through a small contract adapter configured for Polygon Amoy. Verification must check signature, recomputed hash against the stored/registered on-chain hash, registration existence, and revocation. Return distinct valid, revoked, tampered, and not_found statuses; avoid exposing credential details in employer verification responses. Add focused tests, using a mock chain adapter for repeatability and a clear manual Amoy integration checklist. Validate environment settings; keep private keys and RPC URLs only in ignored local .env files and use .env.example with names/placeholders only. Do not claim complete W3C JSON-LD proof-suite compliance. Do not deploy or use real credentials. Explain setup and tests in plain language, summarize changed files, and draft a PR description.
+```
+
+## Peterson - end-to-end smoke testing and demo evidence
+
+```text
+You are helping test and document the academic credential verification MVP. Read README.md, docs/team-workflow.md, docs/testing-and-demo.md, and docs/smoke-test/smoke-test-report.md. Work mainly in docs/smoke-test/ and coordinate any code issue with the responsible owner instead of changing backend, contract, or frontend behavior without agreement.
+
+Run the written checklist with synthetic data only. Record the date, commit tested, expected and actual results, and any limitations. Use screenshots that show no API tokens, private keys, RPC secrets, or real student information. If a check fails, document the exact safe-to-share error and the steps to reproduce it. Summarize the result in beginner-friendly language and prepare a concise demo handoff for Victor.
 ```

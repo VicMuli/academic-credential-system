@@ -1,5 +1,7 @@
 # Team workflow and ownership
 
+**Updated completion and presentation target: Friday, 20 November 2026.**
+
 ## Roles
 
 | Member | Owns | Deliverable |
@@ -7,9 +9,10 @@
 | Victor Nzioki | Coordinator, integration, architecture | Agreed interfaces, integration branch plan, deployment/config coordination, PR review, end-to-end demo readiness |
 | Jose | Solidity smart contract | Minimal credential registry, hash registration, revocation, contract tests, Amoy deployment notes |
 | Serah | Next.js frontend | Issuance form, employer verification form/result, simple responsive UI, frontend setup notes |
-| Fatuma | Node.js backend, testing, documentation | Credential JSON shape and signing, off-chain demo store, API, chain adapter, integrated test plan, demo/presentation docs |
+| Fatuma | Node.js backend, API tests, backend documentation | Credential JSON shape and signing, off-chain demo store, API, chain adapter, unit/integration tests, API setup notes |
+| Peterson | End-to-end smoke testing and demo evidence | Maintain the end-to-end checklist, record results, and prepare redacted screenshots and demo notes |
 
-Victor coordinates integration; Jose remains the owner of the Solidity implementation. Fatuma owns integration tests and explains how verification crosses API and chain.
+Victor coordinates integration; Jose owns the Solidity implementation. Fatuma owns backend/API tests and backend setup documentation. Peterson owns end-to-end smoke testing, the smoke-test report, and demo evidence.
 
 ## Integration sequence
 
@@ -31,11 +34,10 @@ Victor coordinates integration; Jose remains the owner of the Solidity implement
 
 ## Suggested short schedule
 
-- **10 Nov:** create repository, agree interfaces, everyone gets the project running.
-- **11–12 Nov:** parallel contract/API/UI work with mocks and focused commits.
-- **13 Nov:** integrate API with contract on Amoy; fix cross-component issues.
-- **14 Nov:** end-to-end rehearsal, documentation, slides/demo screenshots; freeze features.
-- **15 Nov:** final clean run and presentation.
+- **17 Nov:** smoke-test the backend and frontend using Peterson's checklist -- completed by Victor, with no blocking failure reported.
+- **18 Nov:** review remaining follow-ups, confirm team records, and prepare the final demo.
+- **19 Nov:** run the system from a clean clone, rehearse the presentation, and check that no secrets or real student data appear in the repository.
+- **Friday, 20 Nov:** final demo and submission.
 
 ## Definition of done
 
