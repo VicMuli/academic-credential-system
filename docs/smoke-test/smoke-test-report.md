@@ -2,6 +2,10 @@
 
 Run on 16 November 2026 against `main` at commit `ea1b276`, from a fresh clone, with the backend, the Next.js frontend, and the `CredentialRegistry` contract deployed on Polygon Amoy. All credential data is synthetic ("Sample Graduate"). Nothing in this run is mocked: every issue, verify, and revoke went through the real UI, the real API, and the real Amoy contract.
 
+## Follow-up check - 17 November 2026
+
+Victor reports that the backend and frontend passed Peterson's smoke-test checklist in a follow-up run. This records the later team check; the detailed run conditions and evidence below describe the original 16 November run.
+
 ## Result summary
 
 | # | Check | Expected | Actual | Result |
