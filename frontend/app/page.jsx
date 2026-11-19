@@ -72,6 +72,7 @@ export default function Home() {
   const [verifyResult, setVerifyResult] = useState(null);
   const [verifyError, setVerifyError] = useState('');
   const [revokeMessage, setRevokeMessage] = useState('');
+  const [revokeTransactionHash, setRevokeTransactionHash] = useState('');
   const [revokeError, setRevokeError] = useState('');
 
   async function issueCredential(event) {
@@ -80,6 +81,7 @@ export default function Home() {
     setIssueResult(null);
     setIssueError('');
     setRevokeMessage('');
+    setRevokeTransactionHash('');
     try {
       const result = await apiRequest('/credentials', {
         method: 'POST',
@@ -115,12 +117,14 @@ export default function Home() {
     if (!id || !issuerToken.trim()) return;
     setPending('revoke');
     setRevokeMessage('');
+    setRevokeTransactionHash('');
     setRevokeError('');
     setVerifyResult(null);
     setVerifyError('');
     try {
-      await apiRequest(`/credentials/${encodeURIComponent(id)}/revoke`, { method: 'POST', token: issuerToken });
+      const result = await apiRequest(`/credentials/${encodeURIComponent(id)}/revoke`, { method: 'POST', token: issuerToken });
       setRevokeMessage('Credential revoked. Verify it again to see the updated status.');
+      setRevokeTransactionHash(result?.transactionHash || '');
     } catch (error) {
       setRevokeError(error.message);
     } finally {
@@ -168,7 +172,10 @@ export default function Home() {
           <button className="text-button" type="button" disabled={Boolean(pending) || !issuerToken.trim()} onClick={revokeCredential}>
             {pending === 'revoke' ? <><span className="spinner spinner-dark" />Revoking…</> : 'Revoke this credential'}
           </button>
-          {revokeMessage && <p className="inline-success" role="status">{revokeMessage}</p>}
+          {revokeMessage && <p className="inline-success" role="status">
+            {revokeMessage}
+            {revokeTransactionHash && <> Transaction: <a href={`https://amoy.polygonscan.com/tx/${encodeURIComponent(revokeTransactionHash)}`} target="_blank" rel="noopener noreferrer">{revokeTransactionHash}</a></>}
+          </p>}
           {revokeError && <p className="inline-error" role="alert">{revokeError}</p>}
         </div>}
       </section>
@@ -181,7 +188,7 @@ export default function Home() {
         <div className="verify-intro"><span className="shield" aria-hidden="true">✓</span><p>Enter the credential ID provided by the graduate or university.</p></div>
         <form aria-busy={pending === 'verify'} onSubmit={verifyCredential}>
           <label className="field"><span>Credential ID</span>
-            <input required value={credentialId} onChange={event => { setCredentialId(event.target.value); setVerifyResult(null); setVerifyError(''); }} placeholder="e.g. urn:uuid:…" />
+            <input required value={credentialId} onChange={event => { setCredentialId(event.target.value); setVerifyResult(null); setVerifyError(''); setRevokeMessage(''); setRevokeTransactionHash(''); setRevokeError(''); }} placeholder="e.g. urn:uuid:…" />
           </label>
           <button className="primary-button dark-button" disabled={Boolean(pending) || !credentialId.trim()}>
             {pending === 'verify' ? <span className="button-wait"><span className="spinner" />Checking registry…</span> : <>Verify credential<span aria-hidden="true">→</span></>}
@@ -195,3 +202,4 @@ export default function Home() {
     <footer><span>CredentialDesk · classroom prototype</span><span>Results are provided by the credential API and Polygon Amoy.</span></footer>
   </main>;
 }
+
