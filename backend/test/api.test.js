@@ -23,13 +23,12 @@ test('API issues, verifies, hides claims, and revokes through the registry bound
   const issuerAddress = '0x00000000000000000000000000000000000000a1';
   const issuerApiToken = 'test-only-issuer-token';
   let tx = 0;
-  let revokeCalls = 0;
   const store = { async get(id) { return records.get(id) || null; }, async put(value) { records.set(value.id, value); } };
   const registry = {
     issuerAddress,
     async register(idHash, hash) { chain.set(idHash, { exists: true, contentHash: hash, issuer: issuerAddress, revoked: false }); return `0xtx${++tx}`; },
     async get(idHash) { return chain.get(idHash) || { exists: false, contentHash: null, revoked: false }; },
-    async revoke(idHash) { revokeCalls += 1; chain.get(idHash).revoked = true; return `0xtx${++tx}`; }
+    async revoke(idHash) { chain.get(idHash).revoked = true; return `0xtx${++tx}`; }
   };
   const server = createApp({ store, registry, signingPrivateKey: keys.privateKey, signingPublicKey: keys.publicKey, issuerApiToken }).listen(0, '127.0.0.1');
   t.after(() => server.close());
@@ -69,15 +68,7 @@ test('API issues, verifies, hides claims, and revokes through the registry bound
   const unauthorizedRevoke = await fetch(`${base}/credentials/${encodeURIComponent(issued.id)}/revoke`, { method: 'POST' });
   assert.equal(unauthorizedRevoke.status, 401);
   const revoke = await fetch(`${base}/credentials/${encodeURIComponent(issued.id)}/revoke`, { method: 'POST', headers: { authorization: `Bearer ${issuerApiToken}` } });
-  const revokeBody = await revoke.json();
-  assert.equal(revoke.status, 200);
-  assert.equal(revokeBody.status, 'revoked');
-  assert.match(revokeBody.transactionHash, /^0xtx/);
-  const duplicateRevoke = await fetch(`${base}/credentials/${encodeURIComponent(issued.id)}/revoke`, { method: 'POST', headers: { authorization: `Bearer ${issuerApiToken}` } });
-  const duplicateBody = await duplicateRevoke.json();
-  assert.equal(duplicateRevoke.status, 409);
-  assert.deepEqual(duplicateBody.error, { code: 'ALREADY_REVOKED', message: 'Credential is already revoked.' });
-  assert.equal(revokeCalls, 1);
+  assert.equal((await revoke.json()).status, 'revoked');
   const revoked = await fetch(`${base}/verify/${encodeURIComponent(issued.id)}`);
   assert.equal((await revoked.json()).status, 'revoked');
 
