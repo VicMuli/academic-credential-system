@@ -82,9 +82,10 @@ All errors use `{ "error": { "code": "...", "message": "..." } }`. Stack traces 
 | 400 | `INVALID_JSON` | The request body is not valid JSON |
 | 401 | `UNAUTHORIZED` | Issuer route called without the correct bearer token |
 | 404 | `NOT_FOUND` | Credential not in the store (fetch) or not registered (revoke) |
-| 500 | `INTERNAL_ERROR` | Anything else, including a failed or rejected chain transaction |
+| 409 | `ALREADY_REVOKED` | Credential is already revoked; no new transaction is submitted |
+| 500 | `INTERNAL_ERROR` | Unexpected failures, including rejected chain transactions for reasons other than an already-revoked credential |
 
-Revoking a credential that is already revoked is rejected by the contract and surfaces as `INTERNAL_ERROR`.
+The revoke route reads the registry first and returns `409 ALREADY_REVOKED` when the credential is already revoked.
 
 ## Contract interface
 
