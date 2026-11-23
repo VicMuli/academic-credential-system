@@ -76,6 +76,7 @@ function createApp({ store, registry, signingPrivateKey, signingPublicKey, issue
       const idHash = credentialIdHash(req.params.id);
       const chain = await registry.get(idHash);
       if (!chain.exists) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Credential was not found.' } });
+      if (chain.revoked) return res.status(409).json({ error: { code: 'ALREADY_REVOKED', message: 'Credential is already revoked.' } });
       const transactionHash = await registry.revoke(idHash);
       return res.json({ id: req.params.id, status: 'revoked', transactionHash });
     } catch (error) { return next(error); }
