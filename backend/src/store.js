@@ -10,7 +10,7 @@ function invalidStoreError(message) {
 function parseCredentialStore(contents) {
   let items;
   try {
-    items = JSON.parse(contents.replace(/^\\uFEFF/, ''));
+    items = JSON.parse(contents.replace(/^\uFEFF/, ''));
   } catch {
     throw invalidStoreError('Credential store contains invalid JSON.');
   }
