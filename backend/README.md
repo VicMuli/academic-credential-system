@@ -19,7 +19,7 @@ Generate an Ed25519 signing key pair once and keep its keys stable for the life 
 
 Start the API with `npm start`, or `npm run dev` to restart on file changes. It listens on port 4000 by default (`PORT` changes it), with base URL `http://127.0.0.1:4000/api`. Startup fails with a message naming the missing setting if any required value is absent. The tests use a mock registry and generated keys, so `npm test` needs no `.env`.
 
-The store is read from disk once, on the first request, and kept in memory. Restart the API after editing `backend/data/credentials.json` by hand, for example for the tamper demo in `../docs/testing-and-demo.md`.
+The store is read from disk once, on the first request, and kept in memory. Restart the API after editing `backend/data/credentials.json` by hand, for example for the tamper demo in `../docs/testing-and-demo.md`. A leading UTF-8 BOM is tolerated. If the file is invalid JSON, is not an array, or contains a record without a non-empty string `id`, the API returns `500 INVALID_CREDENTIAL_STORE` with a safe corrective message.
 
 ## API
 
