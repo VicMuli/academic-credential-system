@@ -88,6 +88,10 @@ function createApp({ store, registry, signingPrivateKey, signingPublicKey, issue
     if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
       return res.status(400).json({ error: { code: 'INVALID_JSON', message: 'Request body must be valid JSON.' } });
     }
+    if (error.code === 'INVALID_CREDENTIAL_STORE') {
+      console.error('Credential store rejected:', error.message);
+      return res.status(500).json({ error: { code: error.code, message: error.message } });
+    }
     console.error('API request failed:', error.message);
     return res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'The request could not be completed.' } });
   });
