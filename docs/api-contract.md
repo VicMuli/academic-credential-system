@@ -83,9 +83,10 @@ All errors use `{ "error": { "code": "...", "message": "..." } }`. Stack traces 
 | 401 | `UNAUTHORIZED` | Issuer route called without the correct bearer token |
 | 404 | `NOT_FOUND` | Credential not in the store (fetch) or not registered (revoke) |
 | 409 | `ALREADY_REVOKED` | Credential is already revoked; no new transaction is submitted |
-| 500 | `INTERNAL_ERROR` | Unexpected failures, including rejected chain transactions for reasons other than an already-revoked credential |
+| 500 | `INVALID_CREDENTIAL_STORE` | The store is invalid JSON, is not an array, or contains a record without a non-empty string ID. A leading UTF-8 BOM is accepted. |
+| 500 | `INTERNAL_ERROR` | Unexpected server failures, including rejected chain transactions for reasons other than an already-revoked credential |
 
-The revoke route reads the registry first and returns `409 ALREADY_REVOKED` when the credential is already revoked.
+The revoke route reads the registry first and returns `409 ALREADY_REVOKED` when the credential is already revoked. Store errors return a safe explanation without exposing the local file path or credential contents.
 
 ## Contract interface
 
