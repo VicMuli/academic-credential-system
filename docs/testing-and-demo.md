@@ -27,10 +27,10 @@ Run these before a demo or a pull request. None of them needs an RPC URL, wallet
 4. Verify an unknown ID such as `urn:uuid:does-not-exist`. Expected: `not_found`.
 5. Tamper check:
    1. Stop the backend. It reads the store file once and then keeps it in memory, so edits made while it is running are ignored.
-   2. In `backend/data/credentials.json`, change one claim of the issued credential, for example the degree. Keep the file a UTF-8 JSON array without a byte-order mark: Notepad and Windows PowerShell's `Set-Content` can break it, and the API then answers with a generic error. The one-line Node command in [the smoke-test report](smoke-test/smoke-test-report.md#tamper-step) is safe.
+   2. In `backend/data/credentials.json`, change one claim of the issued credential, for example the degree. Keep the file a UTF-8 JSON array without a byte-order mark: A BOM is tolerated, but Notepad and Windows PowerShell's `ConvertTo-Json` can turn the array into a single object, and the API then answers `500 INVALID_CREDENTIAL_STORE`. The one-line Node command in [the smoke-test report](smoke-test/smoke-test-report.md#tamper-step) is safe.
    3. Start the backend again and verify the same ID. Expected: `tampered`; the signature and integrity checks fail.
    4. Stop the backend, undo the edit exactly, and start it again. Verification returns to `valid`.
-6. Revoke the original ID with **Revoke this credential**, then verify again. Expected: `revoked`; only the revocation check fails.
+6. Revoke the original ID with **Revoke this credential**, then verify again. Expected: the UI shows a Polygonscan link to the revoke transaction, and verification returns `revoked` with only the revocation check failing. Revoking a second time shows "Credential is already revoked." (`409 ALREADY_REVOKED`).
 7. Optional: clear the token field and show that issuing is disabled; a wrong token returns “Issuer authorization is required.”
 8. Confirm no `.env`, private key, seed phrase, RPC secret, issuer token, or real student information is tracked or shown.
 

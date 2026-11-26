@@ -43,7 +43,7 @@ Base URL for local development: `http://127.0.0.1:4000/api`. The browser calls s
 | Issue | `POST /credentials` with `{ credentialSubject }` and the issuer bearer token | `201` with `{ id, status: "registered", transactionHash }` after confirmed registration and storage |
 | Fetch for issuer/demo | `GET /credentials/:id` with the issuer bearer token | Signed off-chain document; never expose private keys |
 | Verify for employer | `GET /verify/:id` | `{ id, status, checks }`; statuses are `valid`, `revoked`, `tampered`, or `not_found` |
-| Revoke | `POST /credentials/:id/revoke` with the issuer bearer token | `{ id, status: "revoked", transactionHash }` after the contract accepts the issuer's request |
+| Revoke | `POST /credentials/:id/revoke` with the issuer bearer token | `{ id, status: "revoked", transactionHash }` after the contract accepts the issuer's request; `404 NOT_FOUND` if unregistered, `409 ALREADY_REVOKED` if already revoked |
 
 Issuer-only routes require `Authorization: Bearer <ISSUER_API_TOKEN>`. Keep the token server-side; for the local classroom UI, the issuer enters it for the session. Verification checks are `signatureValid`, `hashMatches`, `issuerMatches`, `registeredOnChain`, and `notRevoked`. The employer view shows the credential ID and status/checks only; it should not display the graduate's claims. The backend remains authoritative for verification.
 
