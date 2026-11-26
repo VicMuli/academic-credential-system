@@ -28,7 +28,7 @@ Full details, including error codes, are in `../docs/api-contract.md`.
 - `POST /credentials` accepts `{ "credentialSubject": { ...fictional claims... } }`; returns `201` with `{ id, status: "registered", transactionHash }`.
 - `GET /credentials/:id` returns the signed off-chain credential for the issuer demo view.
 - `GET /verify/:id` returns `{ id, status, checks }` with `valid`, `revoked`, `tampered`, or `not_found`. The response excludes credential claims. Checks include `signatureValid`, `hashMatches`, `issuerMatches`, `registeredOnChain`, and `notRevoked`.
-- `POST /credentials/:id/revoke` revokes the on-chain record and returns `{ id, status, transactionHash }`.
+- `POST /credentials/:id/revoke` revokes the on-chain record and returns `{ id, status, transactionHash }`. It returns `404 NOT_FOUND` for an unregistered ID and `409 ALREADY_REVOKED` when the credential is already revoked.
 
 The issue, credential-fetch, and revoke routes require `Authorization: Bearer <ISSUER_API_TOKEN>`. Do not put the token in `NEXT_PUBLIC_*` variables or commit it. For a local frontend demo, ask the issuer to enter it for the session. The employer verification route remains public and returns checks only.
 

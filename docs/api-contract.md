@@ -59,7 +59,7 @@ Issuer routes require `Authorization: Bearer <ISSUER_API_TOKEN>`. A missing or w
 - `POST /credentials` builds and signs the credential, registers the ID hash and content hash on-chain, waits for a successful receipt, and only then saves the signed document off-chain.
 - `GET /credentials/:id` is for the issuer/student demo view only. It returns `404 NOT_FOUND` if the document is not in the local store.
 - `GET /verify/:id` always answers `200`; the outcome is in `status`, which is `valid`, `revoked`, `tampered`, or `not_found`. `checks` holds the booleans `signatureValid`, `hashMatches`, `issuerMatches`, `registeredOnChain`, and `notRevoked`. The response never includes credential claims.
-- `POST /credentials/:id/revoke` returns `404 NOT_FOUND` if the ID is not registered on-chain. It waits for a successful receipt before answering.
+- `POST /credentials/:id/revoke` returns `404 NOT_FOUND` if the ID is not registered on-chain and `409 ALREADY_REVOKED` if it is already revoked (no new transaction is sent). It waits for a successful receipt before answering.
 
 URL-encode the credential ID in paths (`urn:uuid:...` contains colons).
 
